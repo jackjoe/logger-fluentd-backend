@@ -15,7 +15,7 @@ defmodule Fluent.Mixfile do
   # Type `mix help compile.app` for more information
   def application do
     test_apps = (Mix.env == :test && [:porcelain]) || []
-    [applications: test_apps ++ [:logger],
+    [applications: test_apps ++ [:logger, :poison, :msgpax, :socket],
      mod: {Fluent.App, []}]
   end
 
