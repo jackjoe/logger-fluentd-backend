@@ -15,10 +15,20 @@ defmodule Fluent.Client do
     {:ok, {socket, serializer}}
   end
 
-  def handle_cast({:send, tag, data}, {socket, serializer} = state) do
+  def handle_cast({:send, tag, data}, state) do
+    state = send(tag, data, state)
+    {:noreply, state}
+  end
+
+  def handle_call({:send, tag, data}, _from, state) do
+    state = send(tag, data, state)
+    {:reply, :ok, state}
+  end
+
+  defp send(tag, data,  {socket, serializer} = state) do
     packet = serializer.([tag, now, data])
     Socket.Stream.send!(socket, packet)
-    {:noreply, state}
+    state
   end
 
   defp serializer(:msgpack), do: &Msgpax.pack!/1
