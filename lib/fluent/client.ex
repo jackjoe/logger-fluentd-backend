@@ -9,10 +9,18 @@ defmodule Fluent.Client do
     GenServer.start_link(__MODULE__, options, name: name)
   end
 
+  defmodule State do
+    defstruct socket: nil, options: [], serializer: :msgpack
+  end
+
   def init(options) do
-    socket = Socket.TCP.connect!(options[:host] || "localhost",options[:port] || 24224, packet: 0)
     serializer = serializer(options[:serializer] || :msgpack)
-    {:ok, {socket, serializer}}
+    {:ok, %State{options: options, serializer: serializer}}
+  end
+
+  def handle_cast(msg, %State{socket: nil, options: options} = state) do
+    socket = connect(options)
+    handle_cast(msg, %State{ state | socket: socket})
   end
 
   def handle_cast({:send, tag, data}, state) do
@@ -20,12 +28,21 @@ defmodule Fluent.Client do
     {:noreply, state}
   end
 
+  def handle_call(call, from, %State{socket: nil, options: options} = state) do
+    socket = connect(options)
+    handle_call(call, from, %State{ state | socket: socket})
+  end
+
   def handle_call({:send, tag, data}, _from, state) do
     state = send(tag, data, state)
     {:reply, :ok, state}
   end
 
-  defp send(tag, data,  {socket, serializer} = state) do
+  defp connect(options) do
+    Socket.TCP.connect!(options[:host] || "localhost",options[:port] || 24224, packet: 0)
+  end
+
+  defp send(tag, data,  %State{socket: socket, serializer: serializer} = state) do
     packet = serializer.([tag, now, data])
     Socket.Stream.send!(socket, packet)
     state
