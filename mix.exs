@@ -7,8 +7,8 @@ defmodule Fluent.Mixfile do
       version: "0.0.1",
       elixir: ">= 1.5.0",
       description: "fluentd logger backend",
-      package: package,
-      deps: deps
+      package: package(),
+      deps: deps()
     ]
   end
 
