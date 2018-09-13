@@ -15,7 +15,7 @@ defmodule LoggerFluentdBackend do
     # for other strategies and supported options
     # arbitrary "insanely high" number
     opts = [
-      strategy: :simple_one_for_one,
+      strategy: :one_for_one,
       max_restarts: 1_000,
       name: LoggerFluentdBackend.Supervisor
     ]
