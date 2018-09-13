@@ -38,31 +38,24 @@ defmodule LoggerFluentdBackend.Sender do
     {:reply, :ok, %State{socket: nil}}
   end
 
-  # def terminate(_reason, %State{socket: socket}) do
-  #   Socket.Stream.close(socket)
-  # end
+  def terminate(_reason, %State{socket: socket}) do
+    Socket.Stream.close(socket)
+  end
 
   def start_link() do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
   def handle_cast({_, _, _, options} = msg, %State{socket: nil} = state) do
-    IO.inspect("socket nil")
     socket = connect(options)
     handle_cast(msg, %State{state | socket: socket})
   end
 
   def handle_cast({:send, tag, data, options}, %State{socket: socket} = state) do
-    IO.inspect("send")
     packet = serializer(options[:serializer]).([tag, now(), data])
     Socket.Stream.send!(socket, packet)
     {:noreply, state}
   end
-
-  # def handle_call(call, from, %State{socket: nil, options: options} = state) do
-  #   socket = connect(options)
-  #   handle_call(call, from, %State{state | socket: socket})
-  # end
 
   defp connect(options) do
     Socket.TCP.connect!(

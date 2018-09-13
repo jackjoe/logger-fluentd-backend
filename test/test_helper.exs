@@ -1,7 +1,5 @@
 defmodule MockFluentdServer do
   def start(port, receiver) do
-    # IO.puts(">> MockFluentServer on ")
-    # IO.inspect(receiver)
     spawn(fn -> server(port, receiver) end)
     :timer.sleep(10)
   end
@@ -19,8 +17,6 @@ defmodule MockFluentdServer do
 
   def serve(socket, receiver) do
     data = socket |> read_line()
-    # IO.puts("will send from server")
-    # IO.inspect(receiver)
     send(receiver, {:ok, data})
     :gen_tcp.close(socket)
   end
