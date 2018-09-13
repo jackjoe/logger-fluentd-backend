@@ -17,8 +17,8 @@ defmodule MockFluentdServer do
 
   def serve(socket, receiver) do
     data = socket |> read_line()
-
     send(receiver, {:ok, data})
+    :gen_tcp.close(socket)
   end
 
   defp read_line(socket) do

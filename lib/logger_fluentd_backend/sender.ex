@@ -7,15 +7,16 @@ defmodule LoggerFluentdBackend.Sender do
 
   def init(_) do
     # serializer = serializer(options[:serializer] || :msgpack)
-    {:ok, %State{}}
+    {:ok, %State{socket: nil}}
   end
 
   def send(tag, data, host, port) do
+    IO.inspect(%{data: data, tag: tag, host: host, port: port})
     :ok = GenServer.cast(__MODULE__, {:send, tag, data, host, port})
   end
 
-  # def terminate(_reason, state) do
-  #   :gen_udp.close(state.socket)
+  # def terminate(_reason, %State{socket: socket}) do
+  #   Socket.Stream.close(socket)
   # end
 
   def start_link() do
@@ -23,12 +24,18 @@ defmodule LoggerFluentdBackend.Sender do
   end
 
   def handle_cast({_, _, _, host, port} = msg, %State{socket: nil} = state) do
+    IO.inspect("socket nil")
+    IO.inspect(host)
+    IO.inspect(port)
     socket = connect(host: host, port: port)
     handle_cast(msg, %State{state | socket: socket})
   end
 
-  def handle_cast({:send, tag, data, host, port}, %State{socket: socket} = state) do
+  def handle_cast({:send, tag, data, _host, _port}, %State{socket: socket} = state) do
+    IO.inspect("send")
+    IO.inspect(socket)
     packet = serializer(:msgpack).([tag, now(), data])
+    IO.inspect(packet)
     Socket.Stream.send!(socket, packet)
     {:noreply, state}
   end
