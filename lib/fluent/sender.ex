@@ -1,13 +1,5 @@
-defmodule Fluent.Client do
+defmodule LoggerFluentdBackend.Sender do
   use GenServer
-
-  def start_link(options) do
-    GenServer.start_link(__MODULE__, options)
-  end
-
-  def start_link(name, options) do
-    GenServer.start_link(__MODULE__, options, name: name)
-  end
 
   defmodule State do
     defstruct socket: nil, options: [], serializer: :msgpack
@@ -16,6 +8,14 @@ defmodule Fluent.Client do
   def init(options) do
     serializer = serializer(options[:serializer] || :msgpack)
     {:ok, %State{options: options, serializer: serializer}}
+  end
+
+  def start_link(options) do
+    GenServer.start_link(__MODULE__, options)
+  end
+
+  def start_link(name, options) do
+    GenServer.start_link(__MODULE__, options, name: name)
   end
 
   def handle_cast(msg, %State{socket: nil, options: options} = state) do

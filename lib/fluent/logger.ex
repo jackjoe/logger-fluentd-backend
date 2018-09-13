@@ -1,11 +1,11 @@
-defmodule Fluent.LogBackend do
+defmodule LoggerFluentdBackend.Logger do
   use GenEvent
 
   def init(_) do
     if user = Process.whereis(:user) do
       Process.group_leader(self(), user)
       config = configure([])
-      {:ok, fluent} = Fluent.Client.start_link(host: config.host, port: config.port)
+      {:ok, fluent} = LoggerFluentdBackend.Sender.start_link(host: config.host, port: config.port)
       {:ok, put_in(config[:fluent], fluent)}
     else
       {:error, :ignore}
@@ -31,9 +31,9 @@ defmodule Fluent.LogBackend do
   ## Helpers
 
   defp configure(options) do
-    env = Application.get_env(:logger, :fluent, [])
+    env = Application.get_env(:logger, :logger_fluentd_backend, [])
     fluent = configure_merge(env, options)
-    Application.put_env(:logger, :fluent, fluent)
+    Application.put_env(:logger, :logger_fluentd_backend, fluent)
 
     host = Keyword.get(fluent, :host)
     port = Keyword.get(fluent, :port)
@@ -64,6 +64,6 @@ defmodule Fluent.LogBackend do
       payload: md[:payload]
     }
 
-    Fluent.send(fluent, tag, data)
+    LoggerFluentdBackend.send(fluent, tag, data)
   end
 end
