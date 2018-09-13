@@ -24,9 +24,9 @@ defmodule LoggerFluentdBackend.Sender do
     {:reply, :ok, %State{socket: nil}}
   end
 
-  def terminate(_reason, %State{socket: socket}) when not is_nil(socket) do
-    :gen_tcp.close(socket)
-  end
+  # def terminate(_reason, %State{socket: socket}) when not is_nil(socket) do
+  #   :gen_tcp.close(socket)
+  # end
 
   def start_link() do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)

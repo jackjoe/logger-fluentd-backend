@@ -1,5 +1,3 @@
-:application.start(:logger)
-
 defmodule MockFluentdServer do
   def start(port, receiver) do
     spawn(fn -> server(port, receiver) end)
