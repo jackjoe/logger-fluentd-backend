@@ -1,5 +1,5 @@
 defmodule LoggerFluentdBackend.Logger do
-  use GenEvent
+  @behaviour :gen_event
 
   def init(__MODULE__) do
     if Process.whereis(:user) do
@@ -9,13 +9,12 @@ defmodule LoggerFluentdBackend.Logger do
     end
   end
 
-  def init({device, opts}) do
-    # Process.group_leader(self(), Process.whereis(:user))
+  def init({_, _}) do
     state = configure([])
     {:ok, state}
   end
 
-  def handle_call({:configure, options}, state) do
+  def handle_call({:configure, options}, _) do
     state = configure(options)
     {:ok, :ok, state}
   end
@@ -25,7 +24,7 @@ defmodule LoggerFluentdBackend.Logger do
   end
 
   def handle_event({level, _gl, {Logger, msg, ts, md}}, %{level: min_level} = state) do
-    if is_nil(min_level) or Logger.compare_levels(level, min_level) != :lt do
+    if is_nil(min_level) || Logger.compare_levels(level, min_level) != :lt do
       log_event(level, msg, ts, md, state)
     end
 
@@ -63,7 +62,7 @@ defmodule LoggerFluentdBackend.Logger do
     Keyword.merge(env, options, fn _, _v1, v2 -> v2 end)
   end
 
-  defp log_event(level, msg, _ts, md, %{tag: tag}) do
+  defp log_event(level, msg, _ts, md, %{tag: tag} = state) do
     f =
       case md[:function] do
         {f, a} -> "#{f}/#{a}"
@@ -80,6 +79,6 @@ defmodule LoggerFluentdBackend.Logger do
       payload: md[:payload]
     }
 
-    LoggerFluentdBackend.Sender.send(tag, data)
+    LoggerFluentdBackend.Sender.send(tag, data, state.host, state.port)
   end
 end

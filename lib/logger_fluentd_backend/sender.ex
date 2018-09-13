@@ -10,8 +10,8 @@ defmodule LoggerFluentdBackend.Sender do
     {:ok, %State{}}
   end
 
-  def send(tag, data) do
-    :ok = GenServer.cast(__MODULE__, {:send, tag, data})
+  def send(tag, data, host, port) do
+    :ok = GenServer.cast(__MODULE__, {:send, tag, data, host, port})
   end
 
   # def terminate(_reason, state) do
@@ -22,12 +22,12 @@ defmodule LoggerFluentdBackend.Sender do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def handle_cast(msg, %State{socket: nil} = state) do
-    socket = connect([])
+  def handle_cast({_, _, _, host, port} = msg, %State{socket: nil} = state) do
+    socket = connect(host: host, port: port)
     handle_cast(msg, %State{state | socket: socket})
   end
 
-  def handle_cast({:send, tag, data}, %State{socket: socket} = state) do
+  def handle_cast({:send, tag, data, host, port}, %State{socket: socket} = state) do
     packet = serializer(:msgpack).([tag, now(), data])
     Socket.Stream.send!(socket, packet)
     {:noreply, state}

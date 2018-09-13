@@ -18,9 +18,7 @@ defmodule LoggerFluentdBackend.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    test_apps = (Mix.env() == :test && [:porcelain]) || []
-    # [applications: test_apps ++ [:logger, :poison, :msgpax, :socket], mod: {Fluent.App, []}]
-    [applications: test_apps, mod: {LoggerFluentdBackend, []}]
+    [applications: [], mod: {LoggerFluentdBackend, []}]
   end
 
   # Dependencies can be Hex packages:
@@ -36,8 +34,7 @@ defmodule LoggerFluentdBackend.Mixfile do
     [
       {:socket, "~> 0.3.13"},
       {:poison, "~> 3.1.0"},
-      {:msgpax, "~> 2.1.1"},
-      {:porcelain, "~> 2.0.3", only: :test}
+      {:msgpax, "~> 2.1.1"}
     ]
   end
 
