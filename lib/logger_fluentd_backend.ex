@@ -14,16 +14,17 @@ defmodule LoggerFluentdBackend do
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
     # for other strategies and supported options
     # arbitrary "insanely high" number
-    opts = [strategy: :simple_one_for_one, max_restarts: 1_000, name: Fluent.Supervisor]
+    opts = [
+      strategy: :simple_one_for_one,
+      max_restarts: 1_000,
+      name: LoggerFluentdBackend.Supervisor
+    ]
+
     Supervisor.start_link(children, opts)
   end
 
   def start(name, options \\ []) do
     Supervisor.start_child(LoggerFluentdBackend.Supervisor, [name, options])
-  end
-
-  def send(server, tag, data) do
-    GenServer.cast(server, {:send, tag, data})
   end
 
   # def sync_send(server, tag, data, opts \\ [retries: false]) do

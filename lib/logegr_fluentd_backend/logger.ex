@@ -1,19 +1,24 @@
 defmodule LoggerFluentdBackend.Logger do
   use GenEvent
 
-  def init(_) do
-    if user = Process.whereis(:user) do
-      Process.group_leader(self(), user)
-      config = configure([])
-      {:ok, fluent} = LoggerFluentdBackend.Sender.start_link(host: config.host, port: config.port)
-      {:ok, put_in(config[:fluent], fluent)}
+  def init(__MODULE__) do
+    if Process.whereis(:user) do
+      init({:user, []})
     else
       {:error, :ignore}
     end
   end
 
+  def init({device, opts}) do
+    Process.group_leader(self(), Process.whereis(:user))
+    config = configure([])
+    {:ok, fluent} = LoggerFluentdBackend.Sender.start_link(host: config.host, port: config.port)
+    {:ok, put_in(config[:fluent], fluent)}
+  end
+
   def handle_call({:configure, options}, %{fluent: fluent}) do
-    {:ok, :ok, put_in(configure(options)[:fluent], fluent)}
+    state = put_in(configure(options)[:fluent], fluent)
+    {:ok, :ok, state}
   end
 
   def handle_event({_level, gl, _event}, state) when node(gl) != node() do
@@ -26,6 +31,18 @@ defmodule LoggerFluentdBackend.Logger do
     end
 
     {:ok, state}
+  end
+
+  def handle_event(_, state) do
+    {:ok, state}
+  end
+
+  def handle_info(_, state) do
+    {:ok, state}
+  end
+
+  def terminate(_reason, _state) do
+    :ok
   end
 
   ## Helpers
@@ -64,6 +81,6 @@ defmodule LoggerFluentdBackend.Logger do
       payload: md[:payload]
     }
 
-    LoggerFluentdBackend.send(fluent, tag, data)
+    LoggerFluentdBackend.Sender.send(tag, data)
   end
 end
