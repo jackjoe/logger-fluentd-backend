@@ -47,6 +47,7 @@ defmodule LoggerFluentdBackend.Sender do
   def handle_cast({:send, tag, data, options}, %State{socket: socket} = state) do
     IO.inspect("send")
     packet = serializer(options[:serializer]).([tag, now(), data])
+    IO.inspect(packet)
     Socket.Stream.send!(socket, packet)
     {:noreply, state}
   end
