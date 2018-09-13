@@ -20,7 +20,7 @@ defmodule Fluent.Client do
 
   def handle_cast(msg, %State{socket: nil, options: options} = state) do
     socket = connect(options)
-    handle_cast(msg, %State{ state | socket: socket})
+    handle_cast(msg, %State{state | socket: socket})
   end
 
   def handle_cast({:send, tag, data}, state) do
@@ -30,7 +30,7 @@ defmodule Fluent.Client do
 
   def handle_call(call, from, %State{socket: nil, options: options} = state) do
     socket = connect(options)
-    handle_call(call, from, %State{ state | socket: socket})
+    handle_call(call, from, %State{state | socket: socket})
   end
 
   def handle_call({:send, tag, data}, _from, state) do
@@ -39,10 +39,10 @@ defmodule Fluent.Client do
   end
 
   defp connect(options) do
-    Socket.TCP.connect!(options[:host] || "localhost",options[:port] || 24224, packet: 0)
+    Socket.TCP.connect!(options[:host] || "localhost", options[:port] || 24224, packet: 0)
   end
 
-  defp send(tag, data,  %State{socket: socket, serializer: serializer} = state) do
+  defp send(tag, data, %State{socket: socket, serializer: serializer} = state) do
     packet = serializer.([tag, now, data])
     Socket.Stream.send!(socket, packet)
     state
@@ -53,7 +53,7 @@ defmodule Fluent.Client do
   defp serializer(f) when is_function(f, 1), do: f
 
   defp now do
-    {msec, sec, _ } = :os.timestamp
-    msec * 1000000 + sec
+    {msec, sec, _} = :os.timestamp()
+    msec * 1_000_000 + sec
   end
 end

@@ -1,4 +1,3 @@
-Fluent Client
-=============
+# Fluentd Logger Backend
 
-Minimalistic fluentd client
+...

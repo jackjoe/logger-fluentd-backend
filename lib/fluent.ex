@@ -1,5 +1,4 @@
 defmodule Fluent do
-
   defmodule App do
     use Application
 
@@ -15,7 +14,8 @@ defmodule Fluent do
 
       # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
       # for other strategies and supported options
-      opts = [strategy: :simple_one_for_one, max_restarts: 1_000, name: Fluent.Supervisor] # arbitrary "insanely high" number
+      # arbitrary "insanely high" number
+      opts = [strategy: :simple_one_for_one, max_restarts: 1_000, name: Fluent.Supervisor]
       Supervisor.start_link(children, opts)
     end
   end
@@ -30,17 +30,21 @@ defmodule Fluent do
 
   def sync_send(server, tag, data, opts \\ [retries: false]) do
     retries = opts[:retries]
+
     try do
       :ok = GenServer.call(server, {:send, tag, data})
     catch
       :exit, _ ->
         if (not (retries == false or retries == 0) and is_integer(retries)) or retries == true do
-         sync_send(server, tag, data, Keyword.merge(opts, retries: (retries == true && true) || retries - 1))
+          sync_send(
+            server,
+            tag,
+            data,
+            Keyword.merge(opts, retries: (retries == true && true) || retries - 1)
+          )
         else
-         {:error, :failed}
-       end
+          {:error, :failed}
+        end
     end
   end
-
-
 end
