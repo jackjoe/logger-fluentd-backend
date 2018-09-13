@@ -18,7 +18,7 @@ defmodule LoggerFluentdBackend.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:socket], mod: {LoggerFluentdBackend, []}]
+    [applications: [:logger, :poison, :msgpax, :socket], mod: {LoggerFluentdBackend, []}]
   end
 
   # Dependencies can be Hex packages:
