@@ -48,6 +48,7 @@ defmodule LoggerFluentdBackend.Sender do
 
   def handle_cast({_, _, _, options} = msg, %State{socket: nil} = state) do
     socket = connect(options)
+    IO.inspect(socket)
     handle_cast(msg, %State{state | socket: socket})
   end
 
@@ -60,16 +61,12 @@ defmodule LoggerFluentdBackend.Sender do
   defp connect(options) do
     IO.inspect(options)
 
-    res =
-      :gen_tcp.connect(
-        String.to_charlist(options[:host] || "localhost"),
-        options[:port] || 24224,
-        [:binary, active: false, packet: 0],
-        :infinity
-      )
-
-    IO.inspect(res)
-    res
+    :gen_tcp.connect(
+      String.to_charlist(options[:host] || "localhost"),
+      options[:port] || 24224,
+      [:binary, active: false, packet: 0],
+      :infinity
+    )
   end
 
   defp serializer(:msgpack), do: &Msgpax.pack!/1

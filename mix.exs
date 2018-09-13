@@ -4,7 +4,7 @@ defmodule LoggerFluentdBackend.Mixfile do
   def project do
     [
       app: :logger_fluentd_backend,
-      version: "0.0.1",
+      version: "0.0.2",
       elixir: ">= 1.5.0",
       description: "A Fluentd backend for Elixir Logger",
       build_embedded: Mix.env() == :prod,
@@ -18,7 +18,7 @@ defmodule LoggerFluentdBackend.Mixfile do
   #
   # Type `mix help compile.app` for more information
   def application do
-    [applications: [:socket], mod: {LoggerFluentdBackend, []}]
+    [applications: [], mod: {LoggerFluentdBackend, []}]
   end
 
   # Dependencies can be Hex packages:
