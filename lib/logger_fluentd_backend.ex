@@ -23,10 +23,6 @@ defmodule LoggerFluentdBackend do
     Supervisor.start_link(children, opts)
   end
 
-  def start(name, options \\ []) do
-    Supervisor.start_child(LoggerFluentdBackend.Supervisor, [name, options])
-  end
-
   # def sync_send(server, tag, data, opts \\ [retries: false]) do
   #   retries = opts[:retries]
   #
