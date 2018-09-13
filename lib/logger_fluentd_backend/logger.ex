@@ -51,11 +51,13 @@ defmodule LoggerFluentdBackend.Logger do
     Application.put_env(:logger, :logger_fluentd_backend, fluent)
 
     host = Keyword.get(fluent, :host)
+    serializer = Keyword.get(fluent, :serializer)
     port = Keyword.get(fluent, :port)
     tag = Keyword.get(fluent, :tag) || ""
     level = Keyword.get(fluent, :level)
     metadata = Keyword.get(fluent, :metadata, [])
-    %{metadata: metadata, level: level, host: host, port: port, tag: tag}
+
+    %{metadata: metadata, level: level, host: host, port: port, tag: tag, serializer: serializer}
   end
 
   defp configure_merge(env, options) do
@@ -79,6 +81,6 @@ defmodule LoggerFluentdBackend.Logger do
       payload: md[:payload]
     }
 
-    LoggerFluentdBackend.Sender.send(tag, data, state.host, state.port)
+    LoggerFluentdBackend.Sender.send(tag, data, state.host, state.port, state.serializer)
   end
 end

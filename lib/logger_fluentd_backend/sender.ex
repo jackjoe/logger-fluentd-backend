@@ -10,9 +10,24 @@ defmodule LoggerFluentdBackend.Sender do
     {:ok, %State{socket: nil}}
   end
 
+  def send(tag, data, host, port, serializer) do
+    options = [host: host, port: port, serializer: serializer]
+
+    :ok =
+      GenServer.cast(
+        __MODULE__,
+        {:send, tag, data, options}
+      )
+  end
+
   def send(tag, data, host, port) do
-    IO.inspect(%{data: data, tag: tag, host: host, port: port})
-    :ok = GenServer.cast(__MODULE__, {:send, tag, data, host, port})
+    options = [host: host, port: port, serializer: :msgpack]
+
+    :ok =
+      GenServer.cast(
+        __MODULE__,
+        {:send, tag, data, options}
+      )
   end
 
   # def terminate(_reason, %State{socket: socket}) do
@@ -23,19 +38,15 @@ defmodule LoggerFluentdBackend.Sender do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def handle_cast({_, _, _, host, port} = msg, %State{socket: nil} = state) do
+  def handle_cast({_, _, _, options} = msg, %State{socket: nil} = state) do
     IO.inspect("socket nil")
-    IO.inspect(host)
-    IO.inspect(port)
-    socket = connect(host: host, port: port)
+    socket = connect(options)
     handle_cast(msg, %State{state | socket: socket})
   end
 
-  def handle_cast({:send, tag, data, _host, _port}, %State{socket: socket} = state) do
+  def handle_cast({:send, tag, data, options}, %State{socket: socket} = state) do
     IO.inspect("send")
-    IO.inspect(socket)
-    packet = serializer(:msgpack).([tag, now(), data])
-    IO.inspect(packet)
+    packet = serializer(options[:serializer]).([tag, now(), data])
     Socket.Stream.send!(socket, packet)
     {:noreply, state}
   end
