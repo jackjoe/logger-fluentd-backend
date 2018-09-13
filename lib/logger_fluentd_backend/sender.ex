@@ -39,7 +39,7 @@ defmodule LoggerFluentdBackend.Sender do
   end
 
   def terminate(_reason, %State{socket: socket}) do
-    Socket.Stream.close(socket)
+    :gen_tcp.close(socket)
   end
 
   def start_link() do
@@ -53,16 +53,23 @@ defmodule LoggerFluentdBackend.Sender do
 
   def handle_cast({:send, tag, data, options}, %State{socket: socket} = state) do
     packet = serializer(options[:serializer]).([tag, now(), data])
-    Socket.Stream.send!(socket, packet)
+    :gen_tcp.send(socket, packet)
     {:noreply, state}
   end
 
   defp connect(options) do
-    Socket.TCP.connect!(
-      options[:host] || "localhost",
-      options[:port] || 24224,
-      packet: 0
-    )
+    IO.inspect(options)
+
+    res =
+      :gen_tcp.connect(
+        String.to_charlist(options[:host] || "localhost"),
+        options[:port] || 24224,
+        [:binary, active: false, packet: 0],
+        :infinity
+      )
+
+    IO.inspect(res)
+    res
   end
 
   defp serializer(:msgpack), do: &Msgpax.pack!/1
