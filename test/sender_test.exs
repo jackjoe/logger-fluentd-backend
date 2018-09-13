@@ -6,8 +6,8 @@ defmodule SenderTest do
     host = "localhost"
     MockFluentdServer.start(port, self())
     LoggerFluentdBackend.Sender.send("", "Hello TCP", host, port)
-    assert_receive {:ok, msg}, 5000
-    IO.inspect(Enum.join(for <<c::utf8 <- msg>>, do: <<c::utf8>>))
+    # assert_receive {:ok, msg}, 5000
+    # IO.inspect(Enum.join(for <<c::utf8 <- msg>>, do: <<c::utf8>>))
     assert_receive {:ok, "Hello TCP"}, 5000
   end
 end

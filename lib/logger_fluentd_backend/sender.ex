@@ -47,7 +47,6 @@ defmodule LoggerFluentdBackend.Sender do
   def handle_cast({:send, tag, data, options}, %State{socket: socket} = state) do
     IO.inspect("send")
     packet = serializer(options[:serializer]).([tag, now(), data])
-    IO.inspect(packet)
     Socket.Stream.send!(socket, packet)
     {:noreply, state}
   end
@@ -58,7 +57,11 @@ defmodule LoggerFluentdBackend.Sender do
   # end
 
   defp connect(options) do
-    Socket.TCP.connect!(options[:host] || "localhost", options[:port] || 24224, packet: 0)
+    Socket.TCP.connect!(
+      options[:host] || "localhost",
+      options[:port] || 24224,
+      packet: 0
+    )
   end
 
   defp serializer(:msgpack), do: &Msgpax.pack!/1

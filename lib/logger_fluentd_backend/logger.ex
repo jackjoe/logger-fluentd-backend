@@ -51,7 +51,7 @@ defmodule LoggerFluentdBackend.Logger do
     Application.put_env(:logger, :logger_fluentd_backend, fluent)
 
     host = Keyword.get(fluent, :host)
-    serializer = Keyword.get(fluent, :serializer)
+    serializer = Keyword.get(fluent, :serializer) || :json
     port = Keyword.get(fluent, :port)
     tag = Keyword.get(fluent, :tag) || ""
     level = Keyword.get(fluent, :level)
@@ -81,6 +81,12 @@ defmodule LoggerFluentdBackend.Logger do
       payload: md[:payload]
     }
 
-    LoggerFluentdBackend.Sender.send(tag, data, state.host, state.port, state.serializer)
+    LoggerFluentdBackend.Sender.send(
+      tag,
+      data,
+      state.host,
+      state.port,
+      state.serializer
+    )
   end
 end
