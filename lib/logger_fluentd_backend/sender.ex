@@ -34,7 +34,7 @@ defmodule LoggerFluentdBackend.Sender do
     GenServer.call(__MODULE__, {:stop, []})
   end
 
-  def handle_call({:stop, _}, _from, state) do
+  def handle_call({:stop, _}, _from, _state) do
     {:reply, :ok, %State{socket: nil}}
   end
 
