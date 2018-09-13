@@ -32,9 +32,9 @@ defmodule Fluent.Mixfile do
   defp deps do
     [
       {:socket, "~> 0.2.0"},
-      {:poison, "~> 1.3.0"},
-      {:msgpax, "~> 0.6.0"},
-      {:porcelain, "~> 2.0.0", only: :test}
+      {:poison, "~> 3.1.0"},
+      {:msgpax, "~> 2.1.1"},
+      {:porcelain, "~> 2.0.3", only: :test}
     ]
   end
 
