@@ -35,13 +35,9 @@ defmodule Fluent do
       :ok = GenServer.call(server, {:send, tag, data})
     catch
       :exit, _ ->
-        if (not (retries == false or retries == 0) and is_integer(retries)) or retries == true do
-          sync_send(
-            server,
-            tag,
-            data,
-            Keyword.merge(opts, retries: (retries == true && true) || retries - 1)
-          )
+        if (!(retries == false || retries == 0) && is_integer(retries)) || retries == true do
+          opts = Keyword.merge(opts, retries: (retries == true && true) || retries - 1)
+          sync_send(server, tag, data, opts)
         else
           {:error, :failed}
         end
