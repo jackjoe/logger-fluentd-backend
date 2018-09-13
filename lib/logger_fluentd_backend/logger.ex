@@ -24,7 +24,7 @@ defmodule LoggerFluentdBackend.Logger do
   end
 
   def handle_event({level, _gl, {Logger, msg, ts, md}}, %{level: min_level} = state) do
-    if is_nil(min_level) || Logger.compare_levels(level, min_level) != :lt do
+    if meet_level?(level, min_level) do
       log_event(level, msg, ts, md, state)
     end
 
@@ -45,19 +45,25 @@ defmodule LoggerFluentdBackend.Logger do
 
   ## Helpers
 
+  defp meet_level?(_lvl, nil), do: true
+
+  defp meet_level?(lvl, min) do
+    Logger.compare_levels(lvl, min) != :lt
+  end
+
   defp configure(options) do
     env = Application.get_env(:logger, :logger_fluentd_backend, [])
-    fluent = configure_merge(env, options)
-    Application.put_env(:logger, :logger_fluentd_backend, fluent)
+    config = configure_merge(env, options)
+    Application.put_env(:logger, :logger_fluentd_backend, config)
 
-    host = Keyword.get(fluent, :host)
-    serializer = Keyword.get(fluent, :serializer) || :json
-    port = Keyword.get(fluent, :port)
-    tag = Keyword.get(fluent, :tag) || ""
-    level = Keyword.get(fluent, :level)
-    metadata = Keyword.get(fluent, :metadata, [])
+    host = Keyword.get(config, :host)
+    serializer = Keyword.get(config, :serializer) || :json
+    port = Keyword.get(config, :port)
+    tag = Keyword.get(config, :tag) || ""
+    level = Keyword.get(config, :level)
+    # metadata = Keyword.get(config, :metadata, [])
 
-    %{metadata: metadata, level: level, host: host, port: port, tag: tag, serializer: serializer}
+    %{level: level, host: host, port: port, tag: tag, serializer: serializer}
   end
 
   defp configure_merge(env, options) do
