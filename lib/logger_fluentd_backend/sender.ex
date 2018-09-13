@@ -2,12 +2,12 @@ defmodule LoggerFluentdBackend.Sender do
   use GenServer
 
   defmodule State do
-    defstruct socket: nil, options: [], serializer: :msgpack
+    defstruct socket: nil
   end
 
-  def init(options) do
-    serializer = serializer(options[:serializer] || :msgpack)
-    {:ok, %State{options: options, serializer: serializer}}
+  def init(_) do
+    # serializer = serializer(options[:serializer] || :msgpack)
+    {:ok, %State{}}
   end
 
   def send(tag, data) do
@@ -18,25 +18,19 @@ defmodule LoggerFluentdBackend.Sender do
   #   :gen_udp.close(state.socket)
   # end
 
-  def start_link(options) do
-    GenServer.start_link(__MODULE__, options, name: __MODULE__)
+  def start_link() do
+    GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def handle_cast(msg, %State{socket: nil, options: options} = state) do
-    IO.inspect(options)
-    socket = connect(options)
+  def handle_cast(msg, %State{socket: nil} = state) do
+    socket = connect([])
     handle_cast(msg, %State{state | socket: socket})
   end
 
-  def handle_cast({:send, tag, data}, %State{socket: socket, serializer: serializer} = state) do
-    packet = serializer.([tag, now(), data])
+  def handle_cast({:send, tag, data}, %State{socket: socket} = state) do
+    packet = serializer(:msgpack).([tag, now(), data])
     Socket.Stream.send!(socket, packet)
     {:noreply, state}
-  end
-
-  def handle_cast(msg, state) do
-    IO.inspect(msg)
-    IO.inspect(state)
   end
 
   # def handle_call(call, from, %State{socket: nil, options: options} = state) do

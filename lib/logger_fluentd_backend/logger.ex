@@ -10,14 +10,13 @@ defmodule LoggerFluentdBackend.Logger do
   end
 
   def init({device, opts}) do
-    Process.group_leader(self(), Process.whereis(:user))
-    config = configure([])
-    {:ok, fluent} = LoggerFluentdBackend.Sender.start_link(host: config.host, port: config.port)
-    {:ok, put_in(config[:fluent], fluent)}
+    # Process.group_leader(self(), Process.whereis(:user))
+    state = configure([])
+    {:ok, state}
   end
 
-  def handle_call({:configure, options}, %{fluent: fluent}) do
-    state = put_in(configure(options)[:fluent], fluent)
+  def handle_call({:configure, options}, state) do
+    state = configure(options)
     {:ok, :ok, state}
   end
 
@@ -64,7 +63,7 @@ defmodule LoggerFluentdBackend.Logger do
     Keyword.merge(env, options, fn _, _v1, v2 -> v2 end)
   end
 
-  defp log_event(level, msg, _ts, md, %{fluent: fluent, tag: tag}) do
+  defp log_event(level, msg, _ts, md, %{tag: tag}) do
     f =
       case md[:function] do
         {f, a} -> "#{f}/#{a}"
