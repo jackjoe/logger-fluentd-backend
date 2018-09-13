@@ -6,7 +6,7 @@ defmodule LoggerFluentdBackend.Mixfile do
       app: :logger_fluentd_backend,
       version: "0.0.1",
       elixir: ">= 1.5.0",
-      description: "fluentd logger backend",
+      description: "A Fluentd backend for Elixir Logger",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       package: package(),
@@ -40,8 +40,7 @@ defmodule LoggerFluentdBackend.Mixfile do
 
   defp package do
     [
-      files: ["lib", "priv", "mix.exs", "README*", "readme*", "LICENSE*", "license*"],
-      contributors: ["Yurii Rashkovskii", "Jack + Joe"],
+      maintainers: ["Pieter Michels", "Jeroen Bourgois"],
       licenses: ["Apache 2.0"],
       links: %{"GitHub" => "https://github.com/jackjoe/logger-fluentd-backend"}
     ]
