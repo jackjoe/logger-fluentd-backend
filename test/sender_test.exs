@@ -8,6 +8,6 @@ defmodule SenderTest do
     LoggerFluentdBackend.Sender.send("", "Hello TCP", host, port)
     # assert_receive {:ok, msg}, 5000
     # IO.inspect(Enum.join(for <<c::utf8 <- msg>>, do: <<c::utf8>>))
-    assert_receive {:ok, "Hello TCP"}, 5000
+    assert_receive {:ok, "Hello TCP"}, 2000
   end
 end

@@ -21,7 +21,7 @@ defmodule LoggerFluentdBackend.LoggerTest do
   test "will send message" do
     log = "Will send this debugging message"
     Logger.debug(log)
-    assert_receive {:ok, message}, 5000
+    assert_receive {:ok, message}, 2000
     assert String.contains?(message, log)
   end
 end
