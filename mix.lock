@@ -6,6 +6,5 @@
   "msgpax": {:hex, :msgpax, "2.1.1", "833bc9ce6d3e073cf966fec94d3f976ca7100685b4f0efb6e30ef512f2e8a4d7", [:mix], [{:plug, "~> 1.0", [hex: :plug, optional: true]}]},
   "nimble_parsec": {:hex, :nimble_parsec, "0.4.0", "ee261bb53214943679422be70f1658fff573c5d0b0a1ecd0f18738944f818efe", [:mix], []},
   "poison": {:hex, :poison, "3.1.0", "d9eb636610e096f86f25d9a46f35a9facac35609a7591b3be3326e99a0484665", [:mix], []},
-  "porcelain": {:hex, :porcelain, "2.0.3", "2d77b17d1f21fed875b8c5ecba72a01533db2013bd2e5e62c6d286c029150fdc", [:mix], []},
   "socket": {:hex, :socket, "0.3.13", "98a2ab20ce17f95fb512c5cadddba32b57273e0d2dba2d2e5f976c5969d0c632", [:mix], []},
 }

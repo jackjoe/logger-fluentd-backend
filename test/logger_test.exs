@@ -8,7 +8,14 @@ defmodule LoggerFluentdBackend.LoggerTest do
   setup do
     Application.put_env(:logger, :backends, [LoggerFluentdBackend.Logger])
     Application.put_env(:logger, :logger_fluentd_backend, host: @host, port: @port)
+
     Application.ensure_started(:logger)
+
+    # Application.load(:logger_fluentd_backend)
+    #
+    # for app <- Application.spec(:logger_fluentd_backend, :applications) do
+    #   Application.ensure_all_started(app)
+    # end
 
     MockFluentdServer.start(@port, self())
 

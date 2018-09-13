@@ -2,6 +2,8 @@ defmodule LoggerFluentdBackend.Logger do
   @behaviour :gen_event
 
   def init(__MODULE__) do
+    IO.inspect("init 1")
+
     if Process.whereis(:user) do
       init({:user, []})
     else
@@ -10,20 +12,26 @@ defmodule LoggerFluentdBackend.Logger do
   end
 
   def init({_, _}) do
+    IO.inspect("init 2")
     state = configure([])
     {:ok, state}
   end
 
   def handle_call({:configure, options}, _) do
+    IO.inspect("configure")
     state = configure(options)
+    IO.inspect(state)
     {:ok, :ok, state}
   end
 
   def handle_event({_level, gl, _event}, state) when node(gl) != node() do
+    IO.inspect("handle_event 1")
     {:ok, state}
   end
 
   def handle_event({level, _gl, {Logger, msg, ts, md}}, %{level: min_level} = state) do
+    IO.inspect("handle_event 2")
+
     if meet_level?(level, min_level) do
       log_event(level, msg, ts, md, state)
     end
@@ -32,6 +40,7 @@ defmodule LoggerFluentdBackend.Logger do
   end
 
   def handle_event(_, state) do
+    IO.inspect("handle_event 3")
     {:ok, state}
   end
 

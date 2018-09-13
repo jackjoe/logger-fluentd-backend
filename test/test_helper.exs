@@ -1,3 +1,5 @@
+:application.start(:logger)
+
 defmodule MockFluentdServer do
   def start(port, receiver) do
     spawn(fn -> server(port, receiver) end)
@@ -5,7 +7,9 @@ defmodule MockFluentdServer do
   end
 
   def server(port, receiver) do
-    {:ok, socket} = :gen_tcp.listen(port, [:binary, active: false, reuseaddr: true])
+    {:ok, socket} = :gen_tcp.listen(port, [:binary, active: false, reuseaddr: false])
+    IO.inspect("socket")
+    IO.inspect(port)
     loop_acceptor(socket, receiver)
   end
 
@@ -17,6 +21,7 @@ defmodule MockFluentdServer do
 
   def serve(socket, receiver) do
     data = socket |> read_line()
+    IO.inspect(data)
     send(receiver, {:ok, data})
     :gen_tcp.close(socket)
   end
