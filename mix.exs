@@ -32,9 +32,10 @@ defmodule LoggerFluentdBackend.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     [
-      {:socket, "~> 0.3.13"},
+      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:msgpax, "~> 2.1.1"},
       {:poison, "~> 3.1.0"},
-      {:msgpax, "~> 2.1.1"}
+      {:socket, "~> 0.3.13"}
     ]
   end
 
