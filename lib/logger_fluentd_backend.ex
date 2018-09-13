@@ -22,20 +22,4 @@ defmodule LoggerFluentdBackend do
 
     Supervisor.start_link(children, opts)
   end
-
-  # def sync_send(server, tag, data, opts \\ [retries: false]) do
-  #   retries = opts[:retries]
-  #
-  #   try do
-  #     :ok = GenServer.call(server, {:send, tag, data})
-  #   catch
-  #     :exit, _ ->
-  #       if (!(retries == false || retries == 0) && is_integer(retries)) || retries == true do
-  #         opts = Keyword.merge(opts, retries: (retries == true && true) || retries - 1)
-  #         sync_send(server, tag, data, opts)
-  #       else
-  #         {:error, :failed}
-  #       end
-  #   end
-  # end
 end

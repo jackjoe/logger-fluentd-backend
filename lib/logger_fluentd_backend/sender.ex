@@ -6,29 +6,15 @@ defmodule LoggerFluentdBackend.Sender do
   end
 
   def init(_) do
-    # serializer = serializer(options[:serializer] || :msgpack)
     {:ok, %State{socket: nil}}
   end
 
   def send(tag, data, host, port, serializer) do
     options = [host: host, port: port, serializer: serializer]
-
-    :ok =
-      GenServer.cast(
-        __MODULE__,
-        {:send, tag, data, options}
-      )
+    :ok = GenServer.cast(__MODULE__, {:send, tag, data, options})
   end
 
-  def send(tag, data, host, port) do
-    options = [host: host, port: port, serializer: :msgpack]
-
-    :ok =
-      GenServer.cast(
-        __MODULE__,
-        {:send, tag, data, options}
-      )
-  end
+  def send(tag, data, host, port), do: send(tag, data, host, port, :msgpack)
 
   def stop() do
     GenServer.call(__MODULE__, {:stop, []})
