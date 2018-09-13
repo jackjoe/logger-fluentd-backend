@@ -24,7 +24,7 @@ defmodule LoggerFluentdBackend.Sender do
     {:reply, :ok, %State{socket: nil}}
   end
 
-  def terminate(_reason, %State{socket: socket}) do
+  def terminate(_reason, %State{socket: socket}) when not is_nil(socket) do
     Socket.Stream.close(socket)
   end
 
