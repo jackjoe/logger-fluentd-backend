@@ -5,7 +5,7 @@
 
 <!-- [![Build Status](https://travis-ci.org/larskrantz/logger_fluentd_backend.svg?branch=master)](https://travis-ci.org/larskrantz/logger_fluentd_backend) -->
 
-A Fluendt backend for [Elixir Logger](http://elixir-lang.org/docs/stable/logger/Logger.html).
+A Fluentd backend for [Elixir Logger](http://elixir-lang.org/docs/stable/logger/Logger.html).
 
 [Changelog](CHANGELOG.md)
 
