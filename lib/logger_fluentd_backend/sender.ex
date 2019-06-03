@@ -52,7 +52,7 @@ defmodule LoggerFluentdBackend.Sender do
   end
 
   defp serializer(:msgpack), do: &Msgpax.pack!/1
-  defp serializer(:json), do: &Poison.encode!/1
+  defp serializer(:json), do: &Jason.encode!/1
   defp serializer(f) when is_function(f, 1), do: f
 
   defp now() do
