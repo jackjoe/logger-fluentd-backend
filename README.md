@@ -7,8 +7,6 @@
 
 A Fluentd backend for [Elixir Logger](http://elixir-lang.org/docs/stable/logger/Logger.html).
 
-[Changelog](CHANGELOG.md)
-
 ## Installation
 
 Available in [Hex](https://hex.pm/packages/logger_fluentd_backend). The package can be installed as:
