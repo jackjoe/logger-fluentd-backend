@@ -4,7 +4,7 @@ defmodule LoggerFluentdBackend.Mixfile do
   def project do
     [
       app: :logger_fluentd_backend,
-      version: "0.0.3",
+      version: "0.0.4",
       elixir: ">= 1.5.0",
       description: "A Fluentd backend for Elixir Logger",
       build_embedded: Mix.env() == :prod,
