@@ -22,12 +22,10 @@ defmodule LoggerFluentdBackend.Logger do
   end
 
   def handle_event({_level, gl, _event}, state) when node(gl) != node() do
-    IO.inspect state
     {:ok, state}
   end
 
   def handle_event({level, _gl, {Logger, msg, ts, md}}, %{level: min_level} = state) do
-    IO.inspect msg
     if meet_level?(level, min_level) do
       log_event(level, msg, ts, md, state)
     end
