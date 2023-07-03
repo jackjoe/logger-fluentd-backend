@@ -10,7 +10,9 @@ defmodule LoggerFluentdBackend.Mixfile do
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       package: package(),
-      deps: deps()
+      deps: deps(),
+      name: "Logger Fluentd Backend",
+      source_url: "https://github.com/jackjoe/logger-fluentd-backend"
     ]
   end
 
@@ -32,7 +34,7 @@ defmodule LoggerFluentdBackend.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     [
-      {:ex_doc, ">= 0.0.0", only: :dev},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:msgpax, "~> 2.4"},
       {:jason, "~> 1.1"},
       {:socket, "~> 0.3"}
@@ -42,7 +44,7 @@ defmodule LoggerFluentdBackend.Mixfile do
   defp package do
     [
       maintainers: ["Pieter Michels", "Jeroen Bourgois"],
-      licenses: ["Apache 2.0"],
+      licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/jackjoe/logger-fluentd-backend"}
     ]
   end
