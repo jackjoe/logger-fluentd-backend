@@ -27,4 +27,5 @@ defmodule MockFluentdServer do
   end
 end
 
+:application.start(:logger)
 ExUnit.start()
