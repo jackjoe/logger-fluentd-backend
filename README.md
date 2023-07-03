@@ -15,7 +15,7 @@ Add `logger_fluentd_backend` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:logger_fluentd_backend, "~> 0.0.4"}]
+  [{:logger_fluentd_backend, "~> 0.0.6"}]
 end
 ```
 

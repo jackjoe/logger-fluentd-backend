@@ -4,8 +4,8 @@ defmodule LoggerFluentdBackend.Mixfile do
   def project do
     [
       app: :logger_fluentd_backend,
-      version: "0.0.5",
-      elixir: ">= 1.5.0",
+      version: "0.0.6",
+      elixir: ">= 1.6.0",
       description: "A Fluentd backend for Elixir Logger",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -33,9 +33,9 @@ defmodule LoggerFluentdBackend.Mixfile do
   defp deps do
     [
       {:ex_doc, ">= 0.0.0", only: :dev},
-      {:msgpax, "~> 2.2.3"},
+      {:msgpax, "~> 2.4"},
       {:jason, "~> 1.1"},
-      {:socket, "~> 0.3.13"}
+      {:socket, "~> 0.3"}
     ]
   end
 

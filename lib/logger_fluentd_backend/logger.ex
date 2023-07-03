@@ -1,6 +1,8 @@
 defmodule LoggerFluentdBackend.Logger do
   @behaviour :gen_event
 
+  alias LoggerFluentdBackend.Sender
+
   def init(__MODULE__) do
     if Process.whereis(:user) do
       init({:user, []})
@@ -20,10 +22,12 @@ defmodule LoggerFluentdBackend.Logger do
   end
 
   def handle_event({_level, gl, _event}, state) when node(gl) != node() do
+    IO.inspect state
     {:ok, state}
   end
 
   def handle_event({level, _gl, {Logger, msg, ts, md}}, %{level: min_level} = state) do
+    IO.inspect msg
     if meet_level?(level, min_level) do
       log_event(level, msg, ts, md, state)
     end
@@ -46,10 +50,7 @@ defmodule LoggerFluentdBackend.Logger do
   ## Helpers
 
   defp meet_level?(_lvl, nil), do: true
-
-  defp meet_level?(lvl, min) do
-    Logger.compare_levels(lvl, min) != :lt
-  end
+  defp meet_level?(lvl, min), do: Logger.compare_levels(lvl, min) != :lt
 
   defp configure(options) do
     env = Application.get_env(:logger, :logger_fluentd_backend, [])
@@ -87,12 +88,6 @@ defmodule LoggerFluentdBackend.Logger do
       payload: md[:payload]
     }
 
-    LoggerFluentdBackend.Sender.send(
-      tag,
-      data,
-      state.host,
-      state.port,
-      state.serializer
-    )
+    Sender.send(tag, data, state.host, state.port, state.serializer)
   end
 end

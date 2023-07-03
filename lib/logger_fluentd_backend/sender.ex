@@ -1,8 +1,15 @@
 defmodule LoggerFluentdBackend.Sender do
   use GenServer
 
+  alias Socket.Stream
+  alias Socket.TCP
+
   defmodule State do
     defstruct socket: nil
+  end
+
+  def start_link([])do
+    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
   def init(_) do
@@ -25,7 +32,7 @@ defmodule LoggerFluentdBackend.Sender do
   end
 
   def terminate(_reason, %State{socket: socket}) when not is_nil(socket) do
-    Socket.Stream.close(socket)
+    Stream.close(socket)
   end
 
   def start_link() do
@@ -39,12 +46,12 @@ defmodule LoggerFluentdBackend.Sender do
 
   def handle_cast({:send, tag, data, options}, %State{socket: socket} = state) do
     packet = serializer(options[:serializer]).([tag, now(), data])
-    Socket.Stream.send!(socket, packet)
+    Stream.send!(socket, packet)
     {:noreply, state}
   end
 
   defp connect(options) do
-    Socket.TCP.connect!(
+    TCP.connect!(
       options[:host] || "localhost",
       options[:port] || 24224,
       packet: 0
